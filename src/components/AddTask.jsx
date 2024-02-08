@@ -1,16 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaRegFlag } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
 
 import Button from "./Button";
 
-function ModalForAddTask({ visible, setVisible }) {
+function ModalForAddTask({ visible, setVisible,onTaskSaved }) {
+
   const [data, setData] = useState({
     title: "",
     description: "",
     priority: "low",
     isComplete: false,
   });
+  const [tasks, setTasks] = useState([]);
+
+  useEffect(() => {
+    const storedTasks = localStorage.getItem("tasks");
+    console.log(tasks);
+    if (storedTasks) {
+      setTasks(JSON.parse(storedTasks));
+    }
+  }, []);
+
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -20,7 +31,17 @@ function ModalForAddTask({ visible, setVisible }) {
     }));
   };
   const handleSave = () => {
-    console.log(data);
+    const updatedTasks = [...tasks, data];
+    setTasks(updatedTasks);
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+    setData({
+      title: "",
+      description: "",
+      priority: "low",
+      isComplete: false,
+    });
+
+    onTaskSaved();
   };
   const handleCancle = () => {
     setVisible(false)
