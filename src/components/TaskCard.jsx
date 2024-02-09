@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import ModalForAddTask from './AddTask';
 import Button from './Button';
 
-function TaskCard({ task,onDelete,onEdit }) {
+function TaskCard({ task,onDelete,onEdit,onCompleteTask }) {
   let backgroundColor;
   switch (task.priority) {
     case 'high':
@@ -25,16 +24,12 @@ function TaskCard({ task,onDelete,onEdit }) {
   const completionStatus = isComplete ? 'Complete' : 'Incomplete';
 
   const handleChecked = () => {
-    setIsComplete(!isComplete);
-    const storedTasks = JSON.parse(localStorage.getItem('tasks'));
-    const updatedTasks = storedTasks.map(storedTask => {
-      if (storedTask.id === task.id) {
-        return { ...storedTask, isComplete: !isComplete };
-      }
-      return storedTask;
-    });
-    localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+    const updatedIsComplete = !isComplete;
+    setIsComplete(updatedIsComplete);
+  
+    onCompleteTask();
   };
+  
   const handleDelete = (task) => {
     onDelete();
   };
@@ -57,7 +52,6 @@ function TaskCard({ task,onDelete,onEdit }) {
             onChange={handleChecked}
         />
       </div>
-      {/* Absolute positioning for the button container */}
       <div className='absolute bottom-0 right-0 mb-2 mr-2'>
         <Button
             title="Delete"

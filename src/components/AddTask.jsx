@@ -14,7 +14,6 @@ function ModalForAddTask({ visible, setVisible, onTaskSaved, task,setEditedTask 
   });
 
   useEffect(() => {
-    // Set the initial state of the form based on the provided task
     if (task) {
       setData(task);
     }
