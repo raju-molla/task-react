@@ -4,24 +4,21 @@ import { RxCross2 } from "react-icons/rx";
 
 import Button from "./Button";
 
-function ModalForAddTask({ visible, setVisible,onTaskSaved }) {
-
+function ModalForAddTask({ visible, setVisible, onTaskSaved, task,setEditedTask }) {
   const [data, setData] = useState({
+    id: 0,
     title: "",
     description: "",
     priority: "low",
     isComplete: false,
   });
-  const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
-    const storedTasks = localStorage.getItem("tasks");
-    console.log(tasks);
-    if (storedTasks) {
-      setTasks(JSON.parse(storedTasks));
+    // Set the initial state of the form based on the provided task
+    if (task) {
+      setData(task);
     }
-  }, []);
-
+  }, [task]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -30,25 +27,50 @@ function ModalForAddTask({ visible, setVisible,onTaskSaved }) {
       [name]: value,
     }));
   };
+
   const handleSave = () => {
-    const updatedTasks = [...tasks, data];
-    setTasks(updatedTasks);
+    let updatedTasks;
+    if (task) {
+      updatedTasks = JSON.parse(localStorage.getItem("tasks")).map((t) =>
+        t.id === data.id ? data : t
+      );
+    } else {
+      updatedTasks = [
+        ...JSON.parse(localStorage.getItem("tasks") || []),
+        { ...data, id: Date.now() },
+      ];
+    }
     localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+    setEditedTask(null);
+
     setData({
+      id: 0,
       title: "",
       description: "",
       priority: "low",
       isComplete: false,
     });
-
     onTaskSaved();
+    // setVisible();
   };
-  const handleCancle = () => {
-    setVisible(false)
-  }
+
+  const handleCancel = () => {
+    setData({
+      id: 0,
+      title: "",
+      description: "",
+      priority: "low",
+      isComplete: false,
+    });
+    setVisible(false);
+  };
 
   return (
-    <div className="flex flex-col gap-3 border-2 rounded-md mt-5 w-full md:w-1/2 lg:w-1/2 xl:w-1/2 px-5 py-4">
+    <div
+      className={`flex flex-col gap-3 border-2 rounded-md mt-5 w-full md:w-1/2 lg:w-1/2 xl:w-1/2 px-5 py-4 ${
+        visible ? "" : "hidden"
+      }`}
+    >
       <div className="flex flex-col gap-2">
         <div className="flex flex-row justify-between">
           <input
@@ -59,7 +81,7 @@ function ModalForAddTask({ visible, setVisible,onTaskSaved }) {
             value={data.title}
             onChange={handleChange}
           />
-          <RxCross2 className="cursor-pointer"  onClick={handleCancle}/>
+          <RxCross2 className="cursor-pointer" onClick={handleCancel} />
         </div>
         <textarea
           name="description"
@@ -84,12 +106,7 @@ function ModalForAddTask({ visible, setVisible,onTaskSaved }) {
             <option value="high">High</option>
           </select>
         </div>
-        <Button
-          onClick={handleSave}
-          title="Save"
-          color="secondary"
-          size="large"
-        />
+        <Button onClick={handleSave} title="Save" color="secondary" size="large" />
       </div>
     </div>
   );
