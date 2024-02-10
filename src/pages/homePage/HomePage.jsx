@@ -5,7 +5,7 @@ import TaskCard from "../../components/TaskCard";
 import { completeTask } from "../../utils/completeTask";
 
 function HomePage() {
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(true);
   const [data, setData] = useState([]);
   const [editedTask, setEditedTask] = useState(null);
   const [complete, setCompleteTasks] = useState(0);

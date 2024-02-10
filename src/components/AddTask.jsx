@@ -26,22 +26,29 @@ function ModalForAddTask({ visible, setVisible, onTaskSaved, task,setEditedTask 
       [name]: value,
     }));
   };
-
   const handleSave = () => {
     let updatedTasks;
-    if (task) {
-      updatedTasks = JSON.parse(localStorage.getItem("tasks")).map((t) =>
-        t.id === data.id ? data : t
-      );
+    const storedTasks = localStorage.getItem("tasks");
+    
+    if (storedTasks) {
+      const parsedTasks = JSON.parse(storedTasks);
+      if (task) {
+        updatedTasks = parsedTasks.map((t) =>
+          t.id === data.id ? data : t
+        );
+      } else {
+        updatedTasks = [
+          ...parsedTasks,
+          { ...data, id: Date.now() },
+        ];
+      }
     } else {
-      updatedTasks = [
-        ...JSON.parse(localStorage.getItem("tasks") || []),
-        { ...data, id: Date.now() },
-      ];
+      updatedTasks = [ { ...data, id: Date.now() } ];
     }
+  
     localStorage.setItem("tasks", JSON.stringify(updatedTasks));
     setEditedTask(null);
-
+  
     setData({
       id: 0,
       title: "",
@@ -52,6 +59,7 @@ function ModalForAddTask({ visible, setVisible, onTaskSaved, task,setEditedTask 
     onTaskSaved();
     // setVisible();
   };
+  
 
   const handleCancel = () => {
     setData({
