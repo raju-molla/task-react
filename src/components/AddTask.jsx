@@ -12,6 +12,7 @@ function ModalForAddTask({ visible, setVisible, onTaskSaved, task,setEditedTask 
     priority: "low",
     isComplete: false,
   });
+  const [showRequiredMessage, setShowRequiredMessage] = useState(false);
 
   useEffect(() => {
     if (task) {
@@ -27,9 +28,14 @@ function ModalForAddTask({ visible, setVisible, onTaskSaved, task,setEditedTask 
     }));
   };
   const handleSave = () => {
+    if (data.title.trim() === "" || data.description.trim() === "") {
+      setShowRequiredMessage(true);
+      return;
+    }
+  
     let updatedTasks;
     const storedTasks = localStorage.getItem("tasks");
-    
+  
     if (storedTasks) {
       const parsedTasks = JSON.parse(storedTasks);
       if (task) {
@@ -57,6 +63,7 @@ function ModalForAddTask({ visible, setVisible, onTaskSaved, task,setEditedTask 
       isComplete: false,
     });
     onTaskSaved();
+    setShowRequiredMessage(false);
     // setVisible();
   };
   
@@ -77,7 +84,7 @@ function ModalForAddTask({ visible, setVisible, onTaskSaved, task,setEditedTask 
       className={`flex flex-col gap-3 border-2 rounded-md mt-5 w-full md:w-1/2 lg:w-1/2 xl:w-1/2 px-5 py-4 ${
         visible ? "" : "hidden"
       }`}
-    >
+    > 
       <div className="flex flex-col gap-2">
         <div className="flex flex-row justify-between">
           <input
@@ -98,6 +105,9 @@ function ModalForAddTask({ visible, setVisible, onTaskSaved, task,setEditedTask 
           onChange={handleChange}
           rows={2}
         />
+        {showRequiredMessage && (
+          <p className="text-red-500 text-sm">Title and description are required.</p>
+        )}
       </div>
       <div className="flex flex-row justify-between  w-full">
         <div className="flex flex-row gap-3 border-2 px-4 items-center ">

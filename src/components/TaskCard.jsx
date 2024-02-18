@@ -35,6 +35,10 @@ function TaskCard({ task,onDelete,onEdit,onCompleteTask }) {
   };
   const handleEdit = () => {
     onEdit(true);
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
     
   }
   return (
