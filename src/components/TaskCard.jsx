@@ -26,7 +26,6 @@ function TaskCard({ task,onDelete,onEdit,onCompleteTask }) {
   const handleChecked = () => {
     const updatedIsComplete = !isComplete;
     setIsComplete(updatedIsComplete);
-  
     onCompleteTask();
   };
   

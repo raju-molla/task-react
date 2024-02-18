@@ -33,7 +33,7 @@ function Button({ title, color, size, onClick }) {
 
   return (
     <button
-      className={`rounded-lg focus:outline-none ${sizeClass} ${colorClass}`}
+      className={`rounded-md focus:outline-none ${sizeClass} ${colorClass}`}
       onClick={onClick}
     >
       {title}
